@@ -1,0 +1,32 @@
+#### Unity ####
+Library/
+Temp/
+Logs/
+
+#### Solution Files ####
+Assembly-*
+*.csproj
+*.sln
+*.userprefs
+*.unityproj
+.vscode/
+
+#### Exported Files ####
+#*.unitypackage # Unused assets are stored in unitypackage files.
+*.apk
+*.exe
+/bin/*_Data/
+/bin/Mono/
+/bin/*.dll
+/bin.app
+
+#### Visual Studio ####
+.vs/
+obj/Debug/
+
+#### Mac ####
+.DS_Store
+
+#### Game ####
+Save Data*/
+Assets/*~
