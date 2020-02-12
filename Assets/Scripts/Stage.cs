@@ -50,7 +50,7 @@ namespace CPS {
 				m_tutorialPages[i].gameObject.SetActive(false);
 			}
 			for (int i = 0; i != m_levels.Length; ++i) {
-				m_levels[i].Clear();
+				m_levels[i].Clear(false);
 			}
 		}
 	}
