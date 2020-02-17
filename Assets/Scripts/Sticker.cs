@@ -8,11 +8,12 @@ namespace CPS {
 	[RequireComponent(typeof(Image))]
 	public sealed class Sticker : BaseBehaviour {
 
-		new public RectTransform transform {
+		public RectTransform areaDetermination {
 			get {
-				return base.transform as RectTransform;
+				return m_areaDetermination;
 			}
 		}
+		[SerializeField] RectTransform m_areaDetermination = null;
 
 		public void Stick(Drag drag) {
 			m_undoStack.Push(new Dirty {
@@ -21,6 +22,10 @@ namespace CPS {
 			});
 			image.enabled = true;
 			image.sprite = drag.image.sprite;
+			for (int i = 0; i != m_connectedStickers.Length; ++i) {
+				m_connectedStickers[i].image.enabled = true;
+				m_connectedStickers[i].image.sprite = drag.image.sprite;
+			}
 		}
 		public Image image {
 			get {
@@ -32,18 +37,25 @@ namespace CPS {
 		}
 		Image m_image = null;
 
-		void OnEnable() {
+		public bool AddToList() {
+			if (m_stickers.Contains(this)) {
+				return false;
+			}
 			image.sprite = null;
 			image.enabled = false;
 			m_stickers.Add(this);
+			return true;
 		}
 
-		void OnDisable() {
-			m_stickers.Remove(this);			
-			image.enabled = true;
+		public bool RemoveFromList() {
+			if (m_stickers.Remove(this)) {
+				image.enabled = true;
+				return true;
+			}
+			return false;
 		}
 
-		public static int numberOfActiveStickers {
+		public static int numberOfStickers {
 			get {
 				return m_stickers.Count;
 			}
@@ -64,11 +76,18 @@ namespace CPS {
 			if (!(lastAction.sticker.image.sprite = lastAction.image)) {
 				lastAction.sticker.image.enabled = false;
 			}
+			for (int i = 0; i != lastAction.sticker.m_connectedStickers.Length; ++i) {
+				if (!(lastAction.sticker.m_connectedStickers[i].image.sprite = lastAction.sticker.image.sprite)) {
+					lastAction.sticker.m_connectedStickers[i].image.enabled = false;
+				}
+			}
 		}
 		class Dirty {
 			public Sticker sticker;
 			public Sprite image;
 		}
 		static Stack<Dirty> m_undoStack = new Stack<Dirty>();
+
+		[SerializeField] Sticker[] m_connectedStickers = new Sticker[0];
 	}
 }

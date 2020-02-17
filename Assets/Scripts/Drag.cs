@@ -42,14 +42,16 @@ namespace CPS {
 		public void OnPointerUp() {
 			Camera targetCamera = GetComponentInParent<Canvas>().worldCamera;
 			Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(targetCamera, transform.position);
-			for (int i = 0; i != Sticker.numberOfActiveStickers; ++i) {
+			for (int i = 0; i != Sticker.numberOfStickers; ++i) {
 				Sticker sticker = Sticker.GetStickerAt(i);
-				RectTransform stickerTransform = sticker.transform;
-				Vector2 localPoint;
-				if (RectTransformUtility.ScreenPointToLocalPointInRectangle(stickerTransform, screenPoint, targetCamera, out localPoint) &&
-					stickerTransform.rect.Contains(localPoint)) {
-					sticker.Stick(this);
-					break;
+				if (sticker.isActiveAndEnabled) {
+					RectTransform area = sticker.areaDetermination;
+					Vector2 localPoint;
+					if (RectTransformUtility.ScreenPointToLocalPointInRectangle(area, screenPoint, targetCamera, out localPoint) &&
+						area.rect.Contains(localPoint)) {
+						sticker.Stick(this);
+						break;
+					}
 				}
 			}
 			transform.anchoredPosition = Vector2.zero;
@@ -58,14 +60,15 @@ namespace CPS {
 		[Obsolete]
 		public void OnPointerUp(BaseEventData eventData) {
 			Vector2 screenPoint = (eventData as PointerEventData).position;
-			for (int i = 0; i != Sticker.numberOfActiveStickers; ++i) {
+			for (int i = 0; i != Sticker.numberOfStickers; ++i) {
 				Sticker sticker = Sticker.GetStickerAt(i);
-				RectTransform stickerTransform = sticker.transform;
-				Vector2 localPoint;
-				if (RectTransformUtility.ScreenPointToLocalPointInRectangle(stickerTransform, screenPoint, GetComponentInParent<Canvas>().worldCamera, out localPoint) &&
-					stickerTransform.rect.Contains(localPoint)) {
-					sticker.Stick(this);
-					break;
+				if (sticker.isActiveAndEnabled) {
+					RectTransform area = sticker.areaDetermination;
+					Vector2 localPoint;
+					if (RectTransformUtility.ScreenPointToLocalPointInRectangle(area, screenPoint, GetComponentInParent<Canvas>().worldCamera, out localPoint) && area.rect.Contains(localPoint)) {
+						sticker.Stick(this);
+						break;
+					}
 				}
 			}
 			transform.anchoredPosition = Vector2.zero;

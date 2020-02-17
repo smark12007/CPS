@@ -9,7 +9,12 @@ namespace CPS {
 			base.Clear(active);
 			m_currentDiagramSprite = 0;
 			Repaint();
-			m_correctAnswer.SetActive(false);
+			for (int i = 0; i != m_correctAnswers.Length; ++i) {
+				m_correctAnswers[i].SetActive(false);
+			}
+			for (int i = 0; i != m_stickers.Length; ++i) {
+				m_stickers[i].RemoveFromList();
+			}
 			Sticker.ClearUndoStack();
 		}
 
@@ -23,7 +28,9 @@ namespace CPS {
 			}
 			OnConfirm(correct);
 			if (!correct) {
-				m_correctAnswer.SetActive(true);
+				for (int i = 0; i != m_correctAnswers.Length; ++i) {
+					m_correctAnswers[i].SetActive(true);
+				}
 			}
 		}
 
@@ -57,6 +64,14 @@ namespace CPS {
 		[SerializeField] GameObject[] m_diagramImages = null;
 		int m_currentDiagramSprite = 0;
 
+		void OnEnable() {
+			for (int i = 0; i != m_stickers.Length; ++i) {
+				m_stickers[i].AddToList();
+			}
+		}
+
+		[SerializeField] Sticker[] m_stickers = null;
+
 		[Serializable]
 		class PossibleCorrectAnswerGroup {
 
@@ -69,7 +84,7 @@ namespace CPS {
 
 			public bool validateActiveStickers {
 				get {
-					for (int i = 0; i != Sticker.numberOfActiveStickers; ++i) {
+					for (int i = 0; i != Sticker.numberOfStickers; ++i) {
 						if (!ValidateStickerImage(Sticker.GetStickerAt(i))) {
 							return false;
 						}
@@ -89,6 +104,6 @@ namespace CPS {
 		}
 		[SerializeField] PossibleCorrectAnswerGroup[] m_possibleCorrectAnswerGroups = null;
 
-		[SerializeField] GameObject m_correctAnswer = null;
+		[SerializeField] GameObject[] m_correctAnswers = null;
 	}
 }
